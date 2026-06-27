@@ -205,6 +205,32 @@
   </div>
 </section>
 
+<!-- ============ STATS BAND ============ -->
+<section class="relative -mt-8 sm:-mt-14 pb-16 sm:pb-20 z-10">
+  <div class="max-w-5xl mx-auto px-5 sm:px-8">
+    <div class="reveal rounded-3xl bg-white border border-black/[0.07] shadow-[0_30px_70px_-35px_rgba(10,10,10,0.35)] grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-black/[0.07] overflow-hidden">
+      <div class="p-7 sm:p-9 text-center">
+        <div class="font-display font-bold text-4xl sm:text-5xl text-ink tracking-tight">
+          <span class="count" data-target="16">0</span>
+        </div>
+        <p class="mt-2.5 text-sm text-ink/55 leading-snug">Students placed in<br />paid internships</p>
+      </div>
+      <div class="p-7 sm:p-9 text-center">
+        <div class="font-display font-bold text-4xl sm:text-5xl text-ink tracking-tight">
+          <span class="count" data-target="50" data-suffix="+">0</span>
+        </div>
+        <p class="mt-2.5 text-sm text-ink/55 leading-snug">AI industry leaders<br />in our network</p>
+      </div>
+      <div class="p-7 sm:p-9 text-center">
+        <div class="font-display font-bold text-4xl sm:text-5xl text-ink tracking-tight">
+          <span class="count" data-target="185" data-suffix="+">0</span>
+        </div>
+        <p class="mt-2.5 text-sm text-ink/55 leading-snug">Organizations our<br />learners come from</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ BENEFITS ============ -->
 <section id="benefits" class="py-20 sm:py-28 bg-[#FAFAFA] border-y border-black/5">
   <div class="max-w-7xl mx-auto px-5 sm:px-8">
@@ -320,6 +346,36 @@
           </div>
         </div>
 
+        <div class="grid sm:grid-cols-3 gap-5">
+          <div>
+            <label for="course" class="block text-sm font-semibold mb-1.5">Course <span class="text-brand">*</span></label>
+            <input id="course" name="course" type="text" required
+              class="field w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[15px] transition" placeholder="e.g. B.Tech" />
+            <p class="err mt-1 text-xs text-red-500 hidden"></p>
+          </div>
+          <div>
+            <label for="year" class="block text-sm font-semibold mb-1.5">Year <span class="text-brand">*</span></label>
+            <select id="year" name="year" required
+              class="field w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[15px] transition appearance-none bg-no-repeat"
+              style="background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E&quot;);background-position:right 1rem center;">
+              <option value="" disabled selected>Select year</option>
+              <option>1st Year</option>
+              <option>2nd Year</option>
+              <option>3rd Year</option>
+              <option>4th Year</option>
+              <option>5th Year</option>
+              <option>Recent Graduate</option>
+            </select>
+            <p class="err mt-1 text-xs text-red-500 hidden"></p>
+          </div>
+          <div>
+            <label for="branchSection" class="block text-sm font-semibold mb-1.5">Branch &amp; Section <span class="text-brand">*</span></label>
+            <input id="branchSection" name="branchSection" type="text" required
+              class="field w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-[15px] transition" placeholder="e.g. CSE - A" />
+            <p class="err mt-1 text-xs text-red-500 hidden"></p>
+          </div>
+        </div>
+
         <div class="grid sm:grid-cols-2 gap-5">
           <div>
             <label for="phone" class="block text-sm font-semibold mb-1.5">Phone Number <span class="text-brand">*</span></label>
@@ -422,7 +478,7 @@
       </div>
     </div>
     <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-white/40">
-      <p>Copyright © <span id="year"></span> ABTalks. All rights reserved.</p>
+      <p>Copyright © <span id="copyrightYear"></span> ABTalks. All rights reserved.</p>
       <p>“AI Conversations” That Matters!!</p>
     </div>
   </div>
@@ -441,16 +497,36 @@
 
 <script>
 /* ===== CONFIG ===== */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBMCWcd9UeFddeX8_hbdm2HjvF8RZURQi1eAV49Bc4RoIwuOAeaTzf63mVtuz_JQUKHw/exec";
+const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
 
 /* ===== YEAR ===== */
-document.getElementById('year').textContent = new Date().getFullYear();
+document.getElementById('copyrightYear').textContent = new Date().getFullYear();
 
 /* ===== SCROLL REVEAL ===== */
 const io = new IntersectionObserver((entries) => {
   entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+/* ===== COUNT-UP STATS ===== */
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function animateCount(el) {
+  const target = parseInt(el.dataset.target, 10) || 0;
+  const suffix = el.dataset.suffix || '';
+  if (reduceMotion) { el.textContent = target + suffix; return; }
+  const dur = 1400, start = performance.now();
+  function tick(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(eased * target) + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const countObs = new IntersectionObserver((entries) => {
+  entries.forEach((e) => { if (e.isIntersecting) { animateCount(e.target); countObs.unobserve(e.target); } });
+}, { threshold: 0.6 });
+document.querySelectorAll('.count').forEach((el) => countObs.observe(el));
 
 /* ===== FORM ELEMENTS ===== */
 const form = document.getElementById('caForm');
@@ -481,6 +557,9 @@ function validate() {
   const fields = {
     fullName:     { el: form.fullName,      test: (v) => v.trim().length >= 2,                    msg: 'Please enter your full name.' },
     college:      { el: form.college,       test: (v) => v.trim().length >= 2,                    msg: 'Please enter your college name.' },
+    course:       { el: form.course,        test: (v) => v.trim().length >= 1,                    msg: 'Please enter your course.' },
+    year:         { el: form.year,          test: (v) => v.trim() !== '',                         msg: 'Please select your year.' },
+    branchSection:{ el: form.branchSection, test: (v) => v.trim().length >= 1,                    msg: 'Please enter your branch & section.' },
     phone:        { el: form.phone,         test: (v) => /^[6-9]\d{9}$/.test(v.replace(/\D/g,'').replace(/^91/, '')), msg: 'Enter a valid 10-digit mobile number.' },
     collegeEmail: { el: form.collegeEmail,  test: (v) => emailRe.test(v.trim()),                  msg: 'Enter a valid college email.' },
     personalEmail:{ el: form.personalEmail, test: (v) => emailRe.test(v.trim()),                  msg: 'Enter a valid personal email.' },
@@ -494,8 +573,8 @@ function validate() {
 }
 
 /* Clear error as the user types */
-['fullName','college','phone','collegeEmail','personalEmail','address','linkedin'].forEach((n) => {
-  form[n].addEventListener('input', () => setError(form[n], ''));
+['fullName','college','course','year','branchSection','phone','collegeEmail','personalEmail','address','linkedin'].forEach((n) => {
+  ['input','change'].forEach((ev) => form[n].addEventListener(ev, () => setError(form[n], '')));
 });
 
 /* ===== MODAL ===== */
@@ -551,6 +630,9 @@ form.addEventListener('submit', async (e) => {
   const payload = new URLSearchParams({
     fullName:      form.fullName.value.trim(),
     college:       form.college.value.trim(),
+    course:        form.course.value.trim(),
+    year:          form.year.value.trim(),
+    branchSection: form.branchSection.value.trim(),
     phone:         form.phone.value.trim(),
     collegeEmail:  form.collegeEmail.value.trim(),
     personalEmail: form.personalEmail.value.trim(),
@@ -561,7 +643,7 @@ form.addEventListener('submit', async (e) => {
   });
 
   try {
-    if (!SCRIPT_URL || SCRIPT_URL.includes('YOUR_GOOGLE_APPS_SCRIPT')) {
+    if (!SCRIPT_URL || SCRIPT_URL.includes('https://script.google.com/macros/s/AKfycbzBMCWcd9UeFddeX8_hbdm2HjvF8RZURQi1eAV49Bc4RoIwuOAeaTzf63mVtuz_JQUKHw/exec')) {
       throw new Error('SCRIPT_URL not configured');
     }
     await fetch(SCRIPT_URL, { method: 'POST', body: payload });
